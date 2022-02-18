@@ -6,16 +6,24 @@ function saveSVG(tokenid, data) {
   const fs = require("fs");
   const svgDir = __dirname + "/../svgs";
 
+  //do something with res here
+  uri = data.split(",")[1];
+
+  // Parse to JSON
+  const json_uri = Buffer.from(uri, "base64").toString("utf-8");
+  image = JSON.parse(json_uri)["image"];
+
+  // Parse to SVG
+  image = image.split(",")[1];
+  const image_svg = Buffer.from(image, "base64").toString("utf-8");
+
+  console.log(image_svg);
+
   if (!fs.existsSync(svgDir)) {
     fs.mkdirSync(svgDir);
   }
 
-  fs.writeFileSync(
-    svgDir + "/" + tokenid + ".svg",
-    data
-  );
-
-
+  fs.writeFileSync(svgDir + "/" + tokenid + ".svg", image_svg);
 }
 
 async function main() {
@@ -38,21 +46,9 @@ async function main() {
   console.log("Greeter deployed to:", await turtles.name());
 
   await turtles.mint(4, { value: ethers.utils.parseEther("1.0") });
-  await turtles.tokenURI(4).then((res) => {
-    //do something with res here
-    uri = res.split(",")[1];
+  await turtles.tokenURI(1).then((res) => {
 
-    // Parse to JSON
-    const json_uri = Buffer.from(uri, "base64").toString("utf-8");
-    image = JSON.parse(json_uri)["image"];
-
-    // Parse to SVG
-    image = image.split(",")[1];
-    const image_svg = Buffer.from(image, "base64").toString("utf-8");
-
-    console.log(image_svg);
-
-    saveSVG(4, image_svg);
+    saveSVG(1, res);
     //  process.exit();
   });
 }
