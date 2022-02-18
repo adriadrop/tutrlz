@@ -1,16 +1,18 @@
 async function main() {
     const [deployer] = await ethers.getSigners();
-  
+
     console.log("Deploying contracts with the account:", deployer.address);
-  
+
     console.log("Account balance:", (await deployer.getBalance()).toString());
-  
-    const Token = await ethers.getContractFactory("Token");
-    const token = await Token.deploy();
-  
-    console.log("Token address:", token.address);
+
+  const Turtles = await hre.ethers.getContractFactory("TinyWingedTurtlez");
+  const turtles = await Turtles.deploy(
+    "0x58807baD0B376efc12F5AD86aAc70E78ed67deaE"
+  );
+
+    console.log("Token address:", turtles.address);
   }
-  
+
   main()
     .then(() => process.exit(0))
     .catch((error) => {
