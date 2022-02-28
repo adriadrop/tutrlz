@@ -5,8 +5,8 @@ async function main() {
 
     console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Turtles = await hre.ethers.getContractFactory("TinyWingedTurtlez");
-  const turtles = await Turtles.deploy(
+  const KriptoOG = await hre.ethers.getContractFactory("KriptoOG");
+  const kriptoOG = await Turtles.deploy(
     "0x58807baD0B376efc12F5AD86aAc70E78ed67deaE"
   );
 
