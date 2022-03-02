@@ -214,7 +214,7 @@ contract KriptoOG is ERC721, Ownable {
         return
             string(
                 abi.encodePacked(
-                    "<svg id='kripto-ogs' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 32 32'>",
+                    "<svg id='kripto-ogs' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 -0.5 32 32'>",
                     svg,
                     "<style>#kripto-ogs{shape-rendering:crispedges;}</style></svg>"
                 )
