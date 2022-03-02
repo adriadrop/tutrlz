@@ -30,10 +30,12 @@ contract KriptoOG is ERC721, Ownable {
         uint16 backgroundColor;
         uint16 originalHead;
         uint16 originalBody;
+        uint16 originalName;
     }
 
     string[] public bodies;
     string[] public heads;
+    string[] public names;
 
     struct Coordinates {
         string x;
@@ -101,6 +103,24 @@ contract KriptoOG is ERC721, Ownable {
             ]
         );
 
+        names = [
+            "Bliss",
+            "Telasius",
+            "High Priest",
+            "Vukman",
+            "Seljo beljo",
+            "Ojdanic",
+            "Skoric",
+            "Skvorcer",
+            "d_K",
+            "Zord4n",
+            "nodmme",
+            "Marko",
+            "Trolcina",
+            "Putin",
+            "Plenkovic"
+        ];
+
         bodies = [
             '<path stroke="#000000" d="M10,21h1M19,21h1M10,22h2M19,22h1M10,23h3M18,23h2M10,24h4M17,24h3M10,25h2M19,25h1"/><path stroke="#fb922b" d="M9,22h1M20,22h1M7,23h3M20,23h2M5,24h5M20,24h4M4,25h6M12,25h2M17,25h2M20,25h6M3,26h24M3,27h24M3,28h24M3,29h24M3,30h24M3,31h24" />',
             '<path stroke="#193d3f" d="M10,21h1M19,21h1M10,22h2M19,22h1M10,23h3M18,23h2M10,24h4M17,24h3M10,25h2M19,25h1"/><path stroke="#63c64d" d="M9,22h1M8,23h2M21,23h1M5,24h1M8,24h2M21,24h2M4,25h2M8,25h2M12,25h2M17,25h2M21,25h2M25,25h1M4,26h2M8,26h2M12,26h2M17,26h2M21,26h2M25,26h2M4,27h2M8,27h2M12,27h2M17,27h2M21,27h2M25,27h2M4,28h2M8,28h2M12,28h2M17,28h2M21,28h2M25,28h2M4,29h2M8,29h2M12,29h2M17,29h2M21,29h2M25,29h2M4,30h2M8,30h2M12,30h2M17,30h2M21,30h2M25,30h2M4,31h2M8,31h2M12,31h2M17,31h2M21,31h2M25,31h2"/><path stroke="#1bb158" d="M20,22h1M7,23h1M20,23h1M6,24h2M20,24h1M23,24h1M6,25h2M20,25h1M23,25h2M3,26h1M6,26h2M10,26h2M14,26h3M19,26h2M23,26h2M3,27h1M6,27h2M10,27h2M14,27h3M19,27h2M23,27h2M3,28h1M6,28h2M10,28h2M14,28h3M19,28h2M23,28h2M3,29h1M6,29h2M10,29h2M14,29h3M19,29h2M23,29h2M3,30h1M6,30h2M10,30h2M14,30h3M19,30h2M23,30h2M3,31h1M6,31h2M10,31h2M14,31h3M19,31h2M23,31h2"/>',
@@ -119,6 +139,11 @@ contract KriptoOG is ERC721, Ownable {
 
     function totalSupply() public view returns (uint256) {
         return _nextTokenId.current() - 1;
+    }
+
+    function removeName(uint16 index) public {
+        names[index] = names[names.length - 1];
+        names.pop();
     }
 
     function weightedRarityGenerator(uint16 pseudoRandomNumber, uint8 trait)
@@ -159,7 +184,8 @@ contract KriptoOG is ERC721, Ownable {
             Original({
                 backgroundColor: uint16(uint16(pseudoRandomBase) % 8),
                 originalHead: uint16(uint16(pseudoRandomBase) % 5),
-                originalBody: uint16(uint16(pseudoRandomBase) % 4)
+                originalBody: uint16(uint16(pseudoRandomBase) % 4),
+                originalName: uint16(uint16(pseudoRandomBase) % names.length)
             });
     }
 
@@ -173,7 +199,7 @@ contract KriptoOG is ERC721, Ownable {
                 abi.encodePacked(
                     "<rect fill='",
                     backgroundColors[original.backgroundColor].hexCode,
-                    "' height='32' width='32' /> <text x='5' y='3' fill='red' font-size='3'>Telasius</text>"
+                    "' height='32' width='32' />"
                 )
             );
     }
@@ -196,6 +222,16 @@ contract KriptoOG is ERC721, Ownable {
         return originalHead;
     }
 
+    function getOriginalName(Original memory original)
+        private
+        view
+        returns (string memory originalName)
+    {
+        originalName = string(abi.encodePacked(names[original.originalName]));
+    //    removeName(original.originalName);
+        return originalName;
+    }
+
     function getTokenIdOriginal(Original memory original)
         public
         view
@@ -209,14 +245,14 @@ contract KriptoOG is ERC721, Ownable {
             )
         );
 
- //       console.log(svg);
-
         return
             string(
                 abi.encodePacked(
-                    "<svg id='kripto-ogs' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 -0.5 32 32'>",
+                    "<svg id='kripto-ogs' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 -0.5 32 35'>",
                     svg,
-                    "<style>#kripto-ogs{shape-rendering:crispedges;}</style></svg>"
+                    "<rect y='31.5' fill='white' height='3' width='32' /><text x='50%' text-anchor='middle' y='34' fill='black' font-size='3'>",
+                    getOriginalName(original),
+                    "</text><style>#kripto-ogs{shape-rendering:crispedges;}</style></svg>"
                 )
             );
     }
