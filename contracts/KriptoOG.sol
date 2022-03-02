@@ -173,7 +173,7 @@ contract KriptoOG is ERC721, Ownable {
                 abi.encodePacked(
                     "<rect fill='",
                     backgroundColors[original.backgroundColor].hexCode,
-                    "' height='32' width='32' />"
+                    "' height='32' width='32' /> <text x='5' y='3' fill='red' font-size='3'>Telasius</text>"
                 )
             );
     }
