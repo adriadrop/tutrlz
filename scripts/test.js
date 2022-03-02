@@ -16,7 +16,7 @@ function saveSVG(tokenid, data) {
   image = image.split(",")[1];
   const image_svg = Buffer.from(image, "base64").toString("utf-8");
 
- // console.log(image_svg);
+ // console.log(json_uri);
 
   if (!fs.existsSync(svgDir)) {
     fs.mkdirSync(svgDir);
@@ -34,20 +34,20 @@ async function main() {
   await hre.run("compile");
 
   // We get the contract to deploy
-  const Turtles = await hre.ethers.getContractFactory("TinyWingedTurtlez");
-  const turtles = await Turtles.deploy(
+  const Originals = await hre.ethers.getContractFactory("KriptoOG");
+  const originals = await Originals.deploy(
     "0x58807baD0B376efc12F5AD86aAc70E78ed67deaE"
   );
 
-  await turtles.deployed();
+  await originals.deployed();
 
-  console.log("Greeter deployed to:", turtles.address);
-  console.log("Greeter deployed to:", await turtles.name());
+  console.log("Greeter deployed to:", originals.address);
+  console.log("Greeter deployed to:", await originals.name());
 
-  await turtles.mint(10, { value: ethers.utils.parseEther("1.0") });
+  await originals.mint(10, { value: ethers.utils.parseEther("1.0") });
 
   for (let i = 1; i < 10; i++) {
-    await turtles.tokenURI(i).then((res) => saveSVG(i, res));
+    await originals.tokenURI(i).then((res) =>  saveSVG(i, res));
   }
 
   //await turtles.tokenURI(1).then((res) => saveSVG(1, res));
