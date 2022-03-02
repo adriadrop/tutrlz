@@ -30,7 +30,7 @@ contract KriptoOG is ERC721, Ownable {
         uint16 backgroundColor;
         uint16 originalHead;
         uint16 originalBody;
-        uint16 originalName;
+        string originalName;
     }
 
     string[] public bodies;
@@ -141,8 +141,16 @@ contract KriptoOG is ERC721, Ownable {
         return _nextTokenId.current() - 1;
     }
 
-    function removeName(uint16 index) public {
-        names[index] = names[names.length - 1];
+    function removeName(uint256 tokenId) public {
+        Original memory original = tokenIdOriginal[tokenId];
+        console.log(original.originalName);
+        uint256 j;
+            for (uint i = 0; i < names.length; i++) {
+                if ( keccak256(bytes(original.originalName )) == keccak256(bytes(names[i])) ){
+                        j = i;
+                }
+            }
+        names[j] = names[names.length - 1];
         names.pop();
     }
 
@@ -185,7 +193,9 @@ contract KriptoOG is ERC721, Ownable {
                 backgroundColor: uint16(uint16(pseudoRandomBase) % 8),
                 originalHead: uint16(uint16(pseudoRandomBase) % 5),
                 originalBody: uint16(uint16(pseudoRandomBase) % 4),
-                originalName: uint16(uint16(pseudoRandomBase) % names.length)
+                originalName: names[
+                    uint16(uint16(pseudoRandomBase) % names.length)
+                ]
             });
     }
 
@@ -222,15 +232,7 @@ contract KriptoOG is ERC721, Ownable {
         return originalHead;
     }
 
-    function getOriginalName(Original memory original)
-        private
-        view
-        returns (string memory originalName)
-    {
-        originalName = string(abi.encodePacked(names[original.originalName]));
-    //    removeName(original.originalName);
-        return originalName;
-    }
+
 
     function getTokenIdOriginal(Original memory original)
         public
@@ -251,7 +253,7 @@ contract KriptoOG is ERC721, Ownable {
                     "<svg id='kripto-ogs' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 -0.5 32 35'>",
                     svg,
                     "<rect y='31.5' fill='white' height='3' width='32' /><text x='50%' text-anchor='middle' y='34' fill='black' font-size='3'>",
-                    getOriginalName(original),
+                    original.originalName,
                     "</text><style>#kripto-ogs{shape-rendering:crispedges;}</style></svg>"
                 )
             );
@@ -301,6 +303,8 @@ contract KriptoOG is ERC721, Ownable {
             uint256 tokenId = _nextTokenId.current();
 
             tokenIdOriginal[tokenId] = createTokenIdOriginal(tokenId);
+            removeName(tokenId);
+
             _safeMint(msg.sender, tokenId);
             _nextTokenId.increment();
         }
